@@ -67,6 +67,8 @@ syn match armasmBuiltIn		"{NOSWST}"
 " TODO: consider handling for string expansions ($x)
 
 syn match armasmComment		";.*" contains=armasmTodo
+syn match armasmComment		"@.*" contains=armasmTodo
+syn region armasmComment	matchgroup=armasmCommentStart start="/\*" end="\*/" contains=armasmTodo extend
 
 syn region armasmString		start=+"+ end=+"+ oneline
 
@@ -865,6 +867,7 @@ if version >= 508 || !exists("did_armasm_syntax_inits")
 
   HiLink armasmTodo		Todo
   HiLink armasmComment		Comment
+  HiLink armasmCommentStart	Comment
   HiLink armasmDirective	Statement
   HiLink armasmString		String
   HiLink armasmRegister		Structure
@@ -888,9 +891,9 @@ if version >= 508 || !exists("did_armasm_syntax_inits")
   " The following look better (for me, at least) with the alternate mappings,
   " although the more "natural" way to highlight them is as follows:
   "
-  "HiLink armasmLabel		Label
-  "HiLink armasmOpcode		Keyword
-  "HiLink armasmOperator		Operator
+  HiLink armasmLabel		Label
+  HiLink armasmOpcode		Keyword
+  HiLink armasmOperator		Operator
 
   HiLink armasmLabel		Identifier
   HiLink armasmOpcode		Normal
