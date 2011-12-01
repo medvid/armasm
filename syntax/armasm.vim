@@ -24,13 +24,18 @@ syn keyword armasmTodo		NOTE TODO XXX contained
 syn case ignore
 
 syn match armasmIdentifier	"[a-z_$][a-z0-9_$]*"
-syn match armasmLabel		"^[A-Z_$][A-Z0-9_$]*"
+syn match armasmLabel		"^[a-zA-Z_$][a-zA-Z0-9_$]*"
 syn region armasmLabel		start="||" end="||" oneline
 syn region armasmLabel		start="|" end="|" oneline
 
+syn match armasmAddress		"^[0-9a-fA-F][0-9a-fA-F]\{7\}"
+syn match armasmInstrBin	"\t\([ ]*[0-9a-fA-F]\{4\}[ ]*\|[0-9a-fA-F]\{8\}\)\t"
+
 syn region armasmASCII		start="'" end="'" skip="\\'" oneline
-syn match armasmDecimal		"\d\+"
+syn match armasmDecimal		"\d\+[^a-fA-F]"
+syn match armasmDecimal		"#\d\+"
 syn match armasmHexadecimal	"0[xX]\x\+"
+syn match armasmHexadecimal	"#0[xX]\x\+"
 syn match armasmHexadecimal	"&\x\+"
 syn match armasmBinary		"2_[0-1]\+"
 syn match armasmBase3		"3_[0-2]\+"
@@ -100,7 +105,7 @@ syn match armasmOperator	":LEOR:"
 
 syn keyword armasmRegister	r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13
 syn keyword armasmRegister	r14 r15
-syn keyword armasmRegister	pc lr sp ip sl sb
+syn keyword armasmRegister	pc lr sp ip sl sb fp
 syn keyword armasmRegister	a1 a2 a3 a4 v1 v2 v3 v4 v5 v6 v7 v8
 syn keyword armasmRegister	cpsr cpsr_c cpsr_x cpsr_s cpsr_f cpsr_cx
 syn keyword armasmRegister	cpsr_cxs cpsr_xs cpsr_xsf cpsr_sf cpsr_cxsf
@@ -123,7 +128,7 @@ syn keyword armasmOpcode	MOVMI MOVPL MOVVS MOVVC MOVHI MOVLS
 syn keyword armasmOpcode	MOVGE MOVLT MOVGT MOVLE MOVAL
 syn keyword armasmOpcode	MOVS MOVEQS MOVNES MOVCSS MOVHSS MOVCCS MOVLOS
 syn keyword armasmOpcode	MOVMIS MOVPLS MOVVSS MOVVCS MOVHIS MOVLSS
-syn keyword armasmOpcode	MOVGES MOVLTS MOVGTS MOVLES MOVALS
+syn keyword armasmOpcode	MOVGES MOVLTS MOVGTS MOVLES MOVALS MOVW MOVT
 
 syn keyword armasmOpcode	MVN MVNEQ MVNNE MVNCS MVNHS MVNCC MVNLO
 syn keyword armasmOpcode	MVNMI MVNPL MVNVS MVNVC MVNHI MVNLS
@@ -337,6 +342,7 @@ syn keyword armasmOpcode	CMPGE CMPLT CMPGT CMPLE CMPAL
 syn keyword armasmOpcode	CMN CMNEQ CMNNE CMNCS CMNHS CMNCC CMNLO
 syn keyword armasmOpcode	CMNMI CMNPL CMNVS CMNVC CMNHI CMNLS
 syn keyword armasmOpcode	CMNGE CMNLT CMNGT CMNLE CMNAL
+syn keyword armasmOpcode	CBZ
 
 syn keyword armasmOpcode	NOP
 
@@ -405,10 +411,11 @@ syn keyword armasmOpcode	LDMLSFA LDMGEFA LDMLTFA LDMGTFA LDMLEFA LDMALFA
 syn keyword armasmOpcode	LDMEA LDMEQEA LDMNEEA LDMCSEA LDMHSEA LDMCCEA
 syn keyword armasmOpcode	LDMLOEA LDMMIEA LDMPLEA LDMVSEA LDMVCEA LDMHIEA
 syn keyword armasmOpcode	LDMLSEA LDMGEEA LDMLTEA LDMGTEA LDMLEEA LDMALEA
+syn keyword armasmOpcode	LDM
 
 syn keyword armasmOpcode	PLD
 
-syn keyword armasmOpcode	STR STREQ STRNE STRCS STRHS STRCC STRLO
+syn keyword armasmOpcode	STR STREQ STRNE STRCS STRHS STRCC STRLO STRHEQ
 syn keyword armasmOpcode	STRMI STRPL STRVS STRVC STRHI STRLS
 syn keyword armasmOpcode	STRGE STRLT STRGT STRLE STRAL
 syn keyword armasmOpcode	STRT STREQT STRNET STRCST STRHST STRCCT STRLOT
@@ -512,9 +519,14 @@ syn keyword armasmOpcode	SWI SWIEQ SWINE SWICS SWIHS SWICC SWILO
 syn keyword armasmOpcode	SWIMI SWIPL SWIVS SWIVC SWIHI SWILS
 syn keyword armasmOpcode	SWIGE SWILT SWIGT SWILE SWIAL
 
+syn keyword armasmOpcode	SVC SVCEQ SVCNE SVCCS SVCHS SVCCC SVCLO
+syn keyword armasmOpcode	SVCMI SVCPL SVCVS SVCVC SVCHI SVCLS
+syn keyword armasmOpcode	SVCGE SVCLT SVCGT SVCLE SVCAL
+
 syn keyword armasmOpcode	BKPT
 
 syn keyword armasmOpcode	NEG LSL LSR ASR ROR RRX PUSH POP
+syn keyword armasmOpcode	ASRS ASLS LSLS LSRS UXTB TRAP
 
 syn keyword armasmOpcode	FMULS FMULSEQ FMULSNE FMULSCS FMULSHS FMULSCC
 syn keyword armasmOpcode	FMULSLO FMULSMI FMULSPL FMULSVS FMULSVC FMULSHI
@@ -886,6 +898,8 @@ if version >= 508 || !exists("did_armasm_syntax_inits")
   HiLink armasmBoolean		Boolean
   HiLink armasmBuiltIn		Constant
   HiLink armasmIdentifier	Identifier
+  HiLink armasmAddress		Special
+  HiLink armasmInstrBin		Todo
 
   "
   " The following look better (for me, at least) with the alternate mappings,
