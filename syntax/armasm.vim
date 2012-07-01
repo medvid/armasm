@@ -525,7 +525,8 @@ syn keyword armasmOpcode	SVCGE SVCLT SVCGT SVCLE SVCAL
 
 syn keyword armasmOpcode	BKPT
 
-syn keyword armasmOpcode	NEG LSL LSR ASR ROR RRX PUSH POP
+syn keyword armasmOpcode	NEG LSL LSR ASR ROR RRX PUSH PUSHNE PUSHEQ POP
+syn keyword armasmOpcode	POPNE POPEQ
 syn keyword armasmOpcode	ASRS ASLS LSLS LSRS UXTB TRAP
 
 syn keyword armasmOpcode	FMULS FMULSEQ FMULSNE FMULSCS FMULSHS FMULSCC
@@ -861,7 +862,7 @@ syn keyword armasmDirective	IMPORT INCBIN INCLUDE INFO KEEP LCLA LCLL LCLS
 syn keyword armasmDirective	LTORG MACRO MAP MEND MEXIT NOFP OPT POP PROC
 syn keyword armasmDirective	PUSH REGISTER REMEMBER REQUIRE RESTORE RLIST RN
 syn keyword armasmDirective	ROUT SAVE SETA SETL SETS SN SPACE STATE SUBT
-syn keyword armasmDirective	TTL WEND WHILE
+syn keyword armasmDirective	TTL WEND WHILE ENDM
 syn keyword armasmDirective	ASSOC CODE COMDEF COMMON NOINIT READONLY
 syn keyword armasmDirective	READWRITE WEAK
 
