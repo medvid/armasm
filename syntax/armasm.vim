@@ -75,6 +75,7 @@ syn match armasmBuiltIn		"{NOSWST}"
 syn match armasmComment		";.*" contains=armasmTodo
 syn match armasmComment		"@.*" contains=armasmTodo
 syn region armasmComment	matchgroup=armasmCommentStart start="/\*" end="\*/" contains=armasmTodo extend
+syn match armasmIfdef		"\#\(include\|ifdef\|ifndef\|define\|error\|if\|endif\|else\|elif\)"
 
 syn region armasmString		start=+"+ end=+"+ oneline
 
@@ -902,7 +903,7 @@ if version >= 508 || !exists("did_armasm_syntax_inits")
   HiLink armasmIdentifier	Identifier
   HiLink armasmAddress		Special
   HiLink armasmInstrBin		Todo
-
+  HiLink armasmIfdef		PreCondit
   "
   " The following look better (for me, at least) with the alternate mappings,
   " although the more "natural" way to highlight them is as follows:
