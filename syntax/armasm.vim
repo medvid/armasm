@@ -35,9 +35,9 @@ syn match armasmInstrBin	"\t\([ ]*[0-9a-fA-F]\{4\}[ ]*\|[0-9a-fA-F]\{8\}\)\t"
 
 syn region armasmASCII		start="'" end="'" skip="\\'" oneline
 syn match armasmDecimal		"\d\+[^a-fA-F]"
-syn match armasmDecimal		"#\d\+"
+syn match armasmDecimal		"#-?\d\+"
 syn match armasmHexadecimal	"0[xX]\x\+"
-syn match armasmHexadecimal	"#0[xX]\x\+"
+syn match armasmHexadecimal	"#-?0[xX]\x\+"
 syn match armasmHexadecimal	"&\x\+"
 syn match armasmBinary		"2_[0-1]\+"
 syn match armasmBinary		"0[bB][0-1]\+"
