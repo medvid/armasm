@@ -75,6 +75,7 @@ syn match armasmBuiltIn		"{NOSWST}"
 " TODO: consider handling for string expansions ($x)
 
 syn match armasmComment		";.*" contains=armasmTodo
+syn match armasmComment   "//.*" contains=armasmTodo
 syn match armasmComment		"@.*" contains=armasmTodo
 syn region armasmComment	matchgroup=armasmCommentStart start="/\*" end="\*/" contains=armasmTodo extend
 syn match armasmIfdef		"\#\(include\|ifdef\|ifndef\|define\|error\|if\|endif\|else\|elif\)"
