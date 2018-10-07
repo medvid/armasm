@@ -17,6 +17,8 @@ elseif exists("b:current_syntax")
   finish
 endif
 
+setlocal iskeyword+=.
+
 syn case match
 syn keyword armasmTodo		NOTE TODO XXX contained
 
@@ -33,9 +35,9 @@ syn match armasmInstrBin	"\t\([ ]*[0-9a-fA-F]\{4\}[ ]*\|[0-9a-fA-F]\{8\}\)\t"
 
 syn region armasmASCII		start="'" end="'" skip="\\'" oneline
 syn match armasmDecimal		"\d\+[^a-fA-F]"
-syn match armasmDecimal		"#\d\+"
+syn match armasmDecimal		"#-\?\d\+"
 syn match armasmHexadecimal	"0[xX]\x\+"
-syn match armasmHexadecimal	"#0[xX]\x\+"
+syn match armasmHexadecimal	"#-\?0[xX]\x\+"
 syn match armasmHexadecimal	"&\x\+"
 syn match armasmBinary		"2_[0-1]\+"
 syn match armasmBinary		"0[bB][0-1]\+"
@@ -73,6 +75,7 @@ syn match armasmBuiltIn		"{NOSWST}"
 " TODO: consider handling for string expansions ($x)
 
 syn match armasmComment		";.*" contains=armasmTodo
+syn match armasmComment   "//.*" contains=armasmTodo
 syn match armasmComment		"@.*" contains=armasmTodo
 syn region armasmComment	matchgroup=armasmCommentStart start="/\*" end="\*/" contains=armasmTodo extend
 syn match armasmIfdef		"\#\(include\|ifdef\|ifndef\|define\|error\|if\|endif\|else\|elif\)"
@@ -108,7 +111,7 @@ syn match armasmOperator	":LEOR:"
 syn keyword armasmRegister	r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13
 syn keyword armasmRegister	r14 r15
 syn keyword armasmRegister	pc lr sp ip sl sb fp
-syn keyword armasmRegister	a1 a2 a3 a4 v1 v2 v3 v4 v5 v6 v7 v8
+syn keyword armasmRegister	a1 a2 a3 a4
 syn keyword armasmRegister	cpsr cpsr_c cpsr_x cpsr_s cpsr_f cpsr_cx
 syn keyword armasmRegister	cpsr_cxs cpsr_xs cpsr_xsf cpsr_sf cpsr_cxsf
 syn keyword armasmRegister	spsr spsr_c spsr_x spsr_s spsr_f spsr_cx
@@ -118,12 +121,62 @@ syn keyword armasmRegister	p14 p15
 syn keyword armasmRegister	c0 c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13
 syn keyword armasmRegister	c14 c15
 syn keyword armasmRegister	f0 f1 f2 f3 f4 f5 f6 f7
-syn keyword armasmRegister	s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12 s13
-syn keyword armasmRegister	s14 s15 s16 s17 s18 s19 s20 s21 s22 s23 s24 s25
-syn keyword armasmRegister	s26 s27 s28 s29 s30 s31
-syn keyword armasmRegister	d0 d1 d2 d3 d4 d5 d6 d7 d8 d9 d10 d11 d12 d13
-syn keyword armasmRegister	d14 d15
 
+" ARM v8 general purpose regs
+syn keyword armasmRegister	x0 x1 x2 x3 x4 x5 x6 x7 x8 x9
+syn keyword armasmRegister	x10 x11 x12 x13 x14 x15 x16 x17 x18 x19
+syn keyword armasmRegister	x20 x21 x22 x23 x24 x25 x26 x27 x28 x29
+syn keyword armasmRegister	x30 x31 xzr
+syn keyword armasmRegister	w0 w1 w2 w3 w4 w5 w6 w7 w8 w9
+syn keyword armasmRegister	w10 w11 w12 w13 w14 w15 w16 w17 w18 w19
+syn keyword armasmRegister	w20 w21 w22 w23 w24 w25 w26 w27 w28 w29
+syn keyword armasmRegister	w30 w31 wzr
+
+" ARM v8 SIMD/VFP regs
+syn keyword armasmRegister	b0 b1 b2 b3 b4 b5 b6 b7 b8 b9
+syn keyword armasmRegister	b10 b11 b12 b13 b14 b15 b16 b17 b18 b19
+syn keyword armasmRegister	b20 b21 b22 b23 b24 b25 b26 b27 b28 b29
+syn keyword armasmRegister	b30 b31
+syn keyword armasmRegister	h0 h1 h2 h3 h4 h5 h6 h7 h8 h9
+syn keyword armasmRegister	h10 h11 h12 h13 h14 h15 h16 h17 h18 h19
+syn keyword armasmRegister	h20 h21 h22 h23 h24 h25 h26 h27 h28 h29
+syn keyword armasmRegister	h30 h31
+syn keyword armasmRegister	s0 s1 s2 s3 s4 s5 s6 s7 s8 s9
+syn keyword armasmRegister	s10 s11 s12 s13 s14 s15 s16 s17 s18 s19
+syn keyword armasmRegister	s20 s21 s22 s23 s24 s25 s26 s27 s28 s29
+syn keyword armasmRegister	s30 s31
+syn keyword armasmRegister	d0 d1 d2 d3 d4 d5 d6 d7 d8 d9
+syn keyword armasmRegister	d10 d11 d12 d13 d14 d15 d16 d17 d18 d19
+syn keyword armasmRegister	d20 d21 d22 d23 d24 d25 d26 d27 d28 d29
+syn keyword armasmRegister	d30 d31
+syn keyword armasmRegister	q0 q1 q2 q3 q4 q5 q6 q7 q8 q9
+syn keyword armasmRegister	q10 q11 q12 q13 q14 q15 q16 q17 q18 q19
+syn keyword armasmRegister	q20 q21 q22 q23 q24 q25 q26 q27 q28 q29
+syn keyword armasmRegister	q30 q31
+syn keyword armasmRegister	v0 v1 v2 v3 v4 v5 v6 v7 v8 v9
+syn keyword armasmRegister	v10 v11 v12 v13 v14 v15 v16 v17 v18 v19
+syn keyword armasmRegister	v20 v21 v22 v23 v24 v25 v26 v27 v28 v29
+syn keyword armasmRegister	v30 v31
+syn keyword armasmRegister	v0.b v1.b v2.b v3.b v4.b v5.b v6.b v7.b v8.b v9.b
+syn keyword armasmRegister	v10.b v11.b v12.b v13.b v14.b v15.b v16.b v17.b v18.b v19.b
+syn keyword armasmRegister	v20.b v21.b v22.b v23.b v24.b v25.b v26.b v27.b v28.b v29.b
+syn keyword armasmRegister	v30.b v31.b
+syn keyword armasmRegister	v0.h v1.h v2.h v3.h v4.h v5.h v6.h v7.h v8.h v9.h
+syn keyword armasmRegister	v10.h v11.h v12.h v13.h v14.h v15.h v16.h v17.h v18.h v19.h
+syn keyword armasmRegister	v20.h v21.h v22.h v23.h v24.h v25.h v26.h v27.h v28.h v29.h
+syn keyword armasmRegister	v30.h v31.h
+syn keyword armasmRegister	v0.s v1.s v2.s v3.s v4.s v5.s v6.s v7.s v8.s v9.s
+syn keyword armasmRegister	v10.s v11.s v12.s v13.s v14.s v15.s v16.s v17.s v18.s v19.s
+syn keyword armasmRegister	v20.s v21.s v22.s v23.s v24.s v25.s v26.s v27.s v28.s v29.s
+syn keyword armasmRegister	v30.s v31.s
+syn keyword armasmRegister	v0.d v1.d v2.d v3.d v4.d v5.d v6.d v7.d v8.d v9.d
+syn keyword armasmRegister	v10.d v11.d v12.d v13.d v14.d v15.d v16.d v17.d v18.d v19.d
+syn keyword armasmRegister	v20.d v21.d v22.d v23.d v24.d v25.d v26.d v27.d v28.d v29.d
+syn keyword armasmRegister	v30.d v31.d
+syn keyword armasmRegister	v0.q v1.q v2.q v3.q v4.q v5.q v6.q v7.q v8.q v9.q
+syn keyword armasmRegister	v10.q v11.q v12.q v13.q v14.q v15.q v16.q v17.q v18.q v19.q
+syn keyword armasmRegister	v20.q v21.q v22.q v23.q v24.q v25.q v26.q v27.q v28.q v29.q
+syn keyword armasmRegister	v30.q v31.q
 
 syn keyword armasmOpcode	MOV MOVEQ MOVNE MOVCS MOVHS MOVCC MOVLO
 syn keyword armasmOpcode	MOVMI MOVPL MOVVS MOVVC MOVHI MOVLS
@@ -868,6 +921,44 @@ syn keyword armasmDirective	TTL WEND WHILE ENDM
 syn keyword armasmDirective	ASSOC CODE COMDEF COMMON NOINIT READONLY
 syn keyword armasmDirective	READWRITE WEAK
 
+" ARMv7 opcoes
+" 
+syn keyword armasmOpcode	CLREX CLREXEQ CLREXNE CLREXCS CLREXHS CLREXCC CLREXLO
+syn keyword armasmOpcode	CLREXMI CLREXPL CLREXVS CLREXVC CLREXHI CLREXLS
+syn keyword armasmOpcode	CLREXGE CLREXLT CLREXGT CLREXLE CLREXAL
+
+syn keyword armasmOpcode	STREX STREXEQ STREXNE STREXCS STREXHS STREXCC STREXLO
+syn keyword armasmOpcode	STREXMI STREXPL STREXVS STREXVC STREXHI STREXLS
+syn keyword armasmOpcode	STREXGE STREXLT STREXGT STREXLE STREXAL
+
+syn keyword armasmOpcode	LDREX LDREXEQ LDREXNE LDREXCS LDREXHS LDREXCC LDREXLO
+syn keyword armasmOpcode	LDREXMI LDREXPL LDREXVS LDREXVC LDREXHI LDREXLS
+syn keyword armasmOpcode	LDREXGE LDREXLT LDREXGT LDREXLE LDREXAL
+syn keyword armasmOpcode	DSB ISB DMB SEV SEVL YIELD
+
+syn keyword armasmOpcode	WFI WFIEQ WFINE WFICS WFIHS WFICC WFILO
+syn keyword armasmOpcode	WFIMI WFIPL WFIVS WFIVC WFIHI WFILS
+syn keyword armasmOpcode	WFIGE WFILT WFIGT WFILE WFIAL
+
+syn keyword armasmOpcode	WFE WFEEQ WFENE WFECS WFEHS WFECC WFELO
+syn keyword armasmOpcode	WFEMI WFEPL WFEVS WFEVC WFEHI WFELS
+syn keyword armasmOpcode	WFEGE WFELT WFEGT WFELE WFEAL
+
+
+syn keyword armasmOpcode	HVC HVCEQ HVCNE HVCCS HVCHS HVCCC HVCLO
+syn keyword armasmOpcode	HVCMI HVCPL HVCVS HVCVC HVCHI HVCLS
+syn keyword armasmOpcode	HVCGE HVCLT HVCGT HVCLE HVCAL
+
+syn keyword armasmOpcode	SMC SMCEQ SMCNE SMCCS SMCHS SMCCC SMCLO
+syn keyword armasmOpcode	SMCMI SMCPL SMCVS SMCVC SMCHI SMCLS
+syn keyword armasmOpcode	SMCGE SMCLT SMCGT SMCLE SMCAL
+
+" ARMv8 opcoes
+syn keyword armasmOpcode	RET UMOV SMOV FMOV MOV32 ERET
+syn keyword armasmOpcode	B.NE B.EQ B.LT B.GE
+syn keyword armasmOpcode	BR UBFX
+syn keyword armasmOpcode	LDP STP
+syn keyword armasmOpcode	IC CPUID TLB AT TLBI SYS SYSL
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
